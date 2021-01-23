@@ -11,6 +11,10 @@ test_stack() {
   npm build
   npx cdk bootstrap
   npx cdk deploy --require-approval never
+  echo "AWS_ACCESS_KEY_ID length:"
+  echo ${AWS_ACCESS_KEY_ID} | wc
+  echo "AWS_DEFAULT_REGION length:"
+  echo ${AWS_DEFAULT_REGION} | wc
 }
 
 # bootstrap
