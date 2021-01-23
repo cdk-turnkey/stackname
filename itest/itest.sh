@@ -6,6 +6,7 @@ test_stack() {
   # get stackname
   echo "NOW IN: $(pwd)"
   ls ..
+  npx ../..
 }
 
 # bootstrap

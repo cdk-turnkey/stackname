@@ -8,8 +8,8 @@
  *   - enables deploying to multiple regions from the same account, same branch
  */
 const stackname = () => {
-  const gitHubRepository: string = process.env.GITHUB_REPOSITORY as string;
-  const gitHubRef: string = process.env.GITHUB_REF as string;
+  const gitHubRepository: string = process.env.GITHUB_REPOSITORY || "";
+  const gitHubRef: string = process.env.GITHUB_REF || "";
   return (
     gitHubRepository.replace(/\//g, "-") +
     "-" +

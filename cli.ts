@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 (async () => {
-  const stackname = require("./index.ts");
+  const stackname = require("./index");
   console.log(stackname());
 })().catch((err) => {
   console.error("error encountered:");
