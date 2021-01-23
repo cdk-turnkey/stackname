@@ -31,7 +31,10 @@ const stackname = (shortName?: string) => {
       .replace(
         /^([^/])([^/]*)[/]([^/])/,
         (_, p1, p2, p3) => p1.toUpperCase() + p2 + p3.toUpperCase()
-      ) + gitHubRef.replace(/^refs\/heads\/(.)/, (_, p1) => p1.toUpperCase())
+      ) +
+    gitHubRef
+      .toLowerCase()
+      .replace(/^refs\/heads\/(.)/, (_, p1) => p1.toUpperCase())
   );
 };
 module.exports = stackname;

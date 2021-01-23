@@ -13,13 +13,36 @@ describe("stackname", () => {
   test.each`
     gitHubRepository                 | gitHubRef                    | expected
     ${"douglasnaphas/madliberation"} | ${"refs/heads/master"}       | ${"DouglasnaphasMadliberationMaster"}
+    ${"douglasNaphas/madLiberation"} | ${"refs/heads/master"}       | ${"DouglasnaphasMadliberationMaster"}
+    ${"douglasNaphas/madLiberation"} | ${"refs/heads/Master"}       | ${"DouglasnaphasMadliberationMaster"}
     ${"douglasnaphas/mljsapi"}       | ${"refs/heads/dev-branch-1"} | ${"DouglasnaphasMljsapiDev-branch-1"}
+    ${"a/bcd"}                       | ${"refs/heads/xyZ"}          | ${"ABcdXyz"}
+    ${"D/va"}                        | ${"refs/heads/rna"}          | ${"DVaRna"}
   `(
-    "$GITHUB_REPOSITORY: $gitHubRepository -> $expected",
+    "$GITHUB_REPOSITORY: $gitHubRepository, $GITHUB_REF: $gitHubRef -> $expected",
     ({ gitHubRepository, gitHubRef, expected }) => {
       process.env.GITHUB_REPOSITORY = gitHubRepository;
       process.env.GITHUB_REF = gitHubRef;
       expect(stackname()).toEqual(expected);
+    }
+  );
+  const slashErorMessage =
+    "Can't figure out repo name. Does GITHUB_REPOSITORY have a '/'?" +
+    " It should have a '/' separating the organization or user from the " +
+    "repo name.";
+  test.each`
+    gitHubRepository | gitHubRef              | expectedError
+    ${""}            | ${"refs/heads/master"} | ${"GITHUB_REPOSITORY is too short, length < 1"}
+    ${"a/bcd"}       | ${""}                  | ${"GITHUB_REF is too short, length < 1"}
+    ${"abcd"}        | ${"refs/heads/abc"}    | ${slashErorMessage}
+  `(
+    "$GITHUB_REPOSITORY: $gitHubRepository, $GITHUB_REF: $gitHubRef -> throw '$expectedError'",
+    ({ gitHubRepository, gitHubRef, expectedError }) => {
+      process.env.GITHUB_REPOSITORY = gitHubRepository;
+      process.env.GITHUB_REF = gitHubRef;
+      expect(() => {
+        stackname();
+      }).toThrow(expectedError);
     }
   );
 });
