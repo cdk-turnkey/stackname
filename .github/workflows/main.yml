@@ -27,9 +27,9 @@ jobs:
           npm install
 
       - name: Install itests
-        working-directory: ./itest/it01
+        working-directory: ./itest
         run: |
-          npm install
+          for stack_dir in $(ls -d */) ; do cd ${stack_dir} && npm install && cd .. ; done
 
       - name: Build
         run: |
