@@ -3,8 +3,6 @@
 test_stack() {
   local stack_dir=$1
   cd $stack_dir
-  npm install
-  npm run build
   # get stackname
   echo "NOW IN: $(pwd)"
   ls ..
