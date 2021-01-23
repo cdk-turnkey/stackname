@@ -9,6 +9,11 @@
  */
 const stackname = () => {
   const gitHubRepository: string = process.env.GITHUB_REPOSITORY as string;
-  return gitHubRepository.replace(/\//g, "-");
+  const gitHubRef: string = process.env.GITHUB_REF as string;
+  return (
+    gitHubRepository.replace(/\//g, "-") +
+    "-" +
+    gitHubRef.replace(/^refs\/heads\//, "")
+  );
 };
 module.exports = stackname;

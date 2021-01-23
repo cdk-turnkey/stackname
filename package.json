@@ -7,7 +7,8 @@
   "scripts": {
     "test": "jest",
     "watch": "tsc -w",
-    "build": "tsc"
+    "build": "tsc",
+    "itest": "bash itest/itest.sh"
   },
   "repository": {
     "type": "git",

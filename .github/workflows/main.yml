@@ -33,3 +33,12 @@ jobs:
       - name: Test
         run: |
           npm test
+
+      - name: Run integration tests
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.TEST_AWS_DEFAULT_REGION }}
+        run: |
+          cd int-test
+          bash itest.sh

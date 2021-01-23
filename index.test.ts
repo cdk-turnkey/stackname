@@ -11,13 +11,14 @@ describe("stackname", () => {
     process.env = OLD_ENV;
   });
   test.each`
-    gitHubRepository                 | expected
-    ${"douglasnaphas/madliberation"} | ${"douglasnaphas-madliberation"}
-    ${"douglasnaphas/mljsapi"}       | ${"douglasnaphas-mljsapi"}
+    gitHubRepository                 | gitHubRef                    | expected
+    ${"douglasnaphas/madliberation"} | ${"refs/heads/master"}       | ${"douglasnaphas-madliberation-master"}
+    ${"douglasnaphas/mljsapi"}       | ${"refs/heads/dev-branch-1"} | ${"douglasnaphas-mljsapi-dev-branch-1"}
   `(
     "$GITHUB_REPOSITORY: $gitHubRepository -> $expected",
-    ({ gitHubRepository, expected }) => {
+    ({ gitHubRepository, gitHubRef, expected }) => {
       process.env.GITHUB_REPOSITORY = gitHubRepository;
+      process.env.GITHUB_REF = gitHubRef;
       expect(stackname()).toEqual(expected);
     }
   );
