@@ -1,5 +1,5 @@
 {
-  "name": "stackname",
+  "name": "@cdk-turnkey/stackname",
   "version": "1.0.0",
   "description": "Get a name for a CDK stack.",
   "main": "index.js",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cdk-deployables/stackname.git"
+    "url": "git+https://github.com/cdk-turnkey/stackname.git"
   },
   "keywords": [
     "CDK"
@@ -20,9 +20,9 @@
   "author": "Douglas Naphas <douglasnaphas@gmail.com>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/cdk-deployables/stackname/issues"
+    "url": "https://github.com/cdk-turnkey/stackname/issues"
   },
-  "homepage": "https://github.com/cdk-deployables/stackname#readme",
+  "homepage": "https://github.com/cdk-turnkey/stackname#readme",
   "dependencies": {
     "commander": "^6.2.1",
     "jest": "^26.6.3",

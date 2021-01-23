@@ -1,0 +1,4 @@
+itest
+.github
+*.test.*s
+*.test.d.*s
