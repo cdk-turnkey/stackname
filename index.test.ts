@@ -12,8 +12,8 @@ describe("stackname", () => {
   });
   test.each`
     gitHubRepository                 | gitHubRef                    | expected
-    ${"douglasnaphas/madliberation"} | ${"refs/heads/master"}       | ${"douglasnaphas-madliberation-master"}
-    ${"douglasnaphas/mljsapi"}       | ${"refs/heads/dev-branch-1"} | ${"douglasnaphas-mljsapi-dev-branch-1"}
+    ${"douglasnaphas/madliberation"} | ${"refs/heads/master"}       | ${"DouglasnaphasMadliberationMaster"}
+    ${"douglasnaphas/mljsapi"}       | ${"refs/heads/dev-branch-1"} | ${"DouglasnaphasMljsapiDev-branch-1"}
   `(
     "$GITHUB_REPOSITORY: $gitHubRepository -> $expected",
     ({ gitHubRepository, gitHubRef, expected }) => {
