@@ -34,7 +34,8 @@ const stackname = (shortName?: string) => {
       ) +
     gitHubRef
       .toLowerCase()
-      .replace(/^refs\/heads\/(.)/, (_, p1) => p1.toUpperCase())
+      .replace(/^refs\/heads\/(.)/, (_, p1) => p1.toUpperCase()) +
+    (shortName ? `-${shortName}` : "")
   );
 };
 module.exports = stackname;

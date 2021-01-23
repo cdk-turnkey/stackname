@@ -45,4 +45,16 @@ describe("stackname", () => {
       }).toThrow(expectedError);
     }
   );
+  test.each`
+    identifier        | gitHubRepository | gitHubRef           | expected
+    ${"myappstack"}   | ${"a/bcd"}       | ${"refs/heads/xyZ"} | ${"ABcdXyz-myappstack"}
+    ${"YourAppStack"} | ${"D/va"}        | ${"refs/heads/rna"} | ${"DVaRna-YourAppStack"}
+  `(
+    "$GITHUB_REPOSITORY: $gitHubRepository, $GITHUB_REF: $gitHubRef -> $expected",
+    ({ identifier, gitHubRepository, gitHubRef, expected }) => {
+      process.env.GITHUB_REPOSITORY = gitHubRepository;
+      process.env.GITHUB_REF = gitHubRef;
+      expect(stackname(identifier)).toEqual(expected);
+    }
+  );
 });
