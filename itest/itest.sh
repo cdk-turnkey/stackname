@@ -11,7 +11,7 @@ test_stack() {
 # bootstrap
 
 # test stacks
-for stack_dir in $(ls -d itest/*/)
+for stack_dir in $(ls -d */)
 do
   echo "HERE IN: $(pwd)"
   # test stack
