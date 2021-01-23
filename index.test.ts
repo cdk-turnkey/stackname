@@ -26,7 +26,7 @@ describe("stackname", () => {
       expect(stackname()).toEqual(expected);
     }
   );
-  const slashErorMessage =
+  const slashErrorMessage =
     "Can't figure out repo name. Does GITHUB_REPOSITORY have a '/'?" +
     " It should have a '/' separating the organization or user from the " +
     "repo name.";
@@ -34,7 +34,7 @@ describe("stackname", () => {
     gitHubRepository | gitHubRef              | expectedError
     ${""}            | ${"refs/heads/master"} | ${"GITHUB_REPOSITORY is too short, length < 1"}
     ${"a/bcd"}       | ${""}                  | ${"GITHUB_REF is too short, length < 1"}
-    ${"abcd"}        | ${"refs/heads/abc"}    | ${slashErorMessage}
+    ${"abcd"}        | ${"refs/heads/abc"}    | ${slashErrorMessage}
   `(
     "$GITHUB_REPOSITORY: $gitHubRepository, $GITHUB_REF: $gitHubRef -> throw '$expectedError'",
     ({ gitHubRepository, gitHubRef, expectedError }) => {
