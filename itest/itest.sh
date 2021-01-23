@@ -7,6 +7,10 @@ test_stack() {
   echo "NOW IN: $(pwd)"
   ls ..
   npx ../..
+  npm install
+  npm build
+  npx cdk bootstrap
+  npx cdk deploy --require-approval never
 }
 
 # bootstrap
