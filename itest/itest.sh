@@ -23,7 +23,7 @@ test_cli() {
   return 0
 }
 
-if ! npx .. --help | grep --quiet suffixx
+if ! npx .. --help | grep --quiet suffix
 then
   echo "cli smoke test failure: --help did not print the word 'suffix'"
   exit 1
