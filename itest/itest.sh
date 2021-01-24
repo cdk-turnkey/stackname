@@ -23,6 +23,7 @@ test_cli() {
   return 0
 }
 
+npx .. --help | grep suffixx
 test_cli cdk-turnkey/stackname refs/heads/abCde Cdk-turnkeyStacknameAbcde
 test_cli MyOrg/MyStack refs/heads/main StackOne MyorgMystackMain-StackOne
 
