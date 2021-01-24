@@ -18,7 +18,7 @@ test_cli() {
   then
     echo "cli integration test failure: expected ${EXPECTED}, got ${ACTUAL}, ran:"
     echo "${COMMAND}"
-    return 1
+    exit 1
   fi
   return 0
 }
