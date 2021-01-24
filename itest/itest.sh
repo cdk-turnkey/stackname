@@ -23,7 +23,11 @@ test_cli() {
   return 0
 }
 
-npx .. --help | grep suffixx
+if ! npx .. --help | grep --quiet suffixx
+then
+  echo "cli smoke test failure: --help did not print the word 'suffix'"
+  exit 1
+fi
 test_cli cdk-turnkey/stackname refs/heads/abCde Cdk-turnkeyStacknameAbcde
 test_cli MyOrg/MyStack refs/heads/main StackOne MyorgMystackMain-StackOne
 
