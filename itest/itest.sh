@@ -6,10 +6,10 @@ test_cli() {
   GITHUB_REF=$2
   if [[ $# -lt 4 ]]
   then
-    SUFFIX_ARG="--suffix $3"
-    EXPECTED=$4
-  else
     SUFFIX_ARG=
+    EXPECTED=$3
+  else
+    SUFFIX_ARG="--suffix $3"
     EXPECTED=$3
   fi
   COMMAND="GITHUB_REPOSITORY=${GITHUB_REPOSITORY} GITHUB_REF=${GITHUB_REF} npx .. ${SUFFIX_ARG}"
