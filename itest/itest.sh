@@ -10,7 +10,7 @@ test_cli() {
     EXPECTED=$3
   else
     SUFFIX_ARG="--suffix $3"
-    EXPECTED=$3
+    EXPECTED=$4
   fi
   COMMAND="GITHUB_REPOSITORY=${GITHUB_REPOSITORY} GITHUB_REF=${GITHUB_REF} npx .. ${SUFFIX_ARG}"
   ACTUAL=$(eval ${COMMAND})
