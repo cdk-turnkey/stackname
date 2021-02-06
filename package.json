@@ -1,7 +1,7 @@
 {
   "name": "@cdk-turnkey/stackname",
-  "version": "1.1.0",
-  "description": "Get a name for a CDK stack.",
+  "version": "1.2.0",
+  "description": "Get a name for a CDK stack based on GITHUB_REPOSITORY and GITHUB_REF in the environment",
   "main": "index.js",
   "bin": "./cli.js",
   "scripts": {
