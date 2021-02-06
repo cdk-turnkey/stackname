@@ -27,14 +27,26 @@ test_cli_error() {
   EXPECTED=$1
   COMMAND="npx .."
   ACTUAL=$(eval ${COMMAND} 2>&1 || true) # || true because COMMAND should fail
-  echo "cli error case failure: expected:"
-  echo "${EXPECTED}"
-  echo "got:
-  ${ACTUAL}"
-  echo "ran:"
-  echo "${COMMAND}"
-  echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}"
-  echo "GITHUB_REF: ${GITHUB_REF}"
+  if [[ "${ACTUAL}" != "${EXPECTED}" ]]
+  then
+    echo "========================================"
+    echo "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV"
+    echo "cli error case failure: expected:"
+    echo "${EXPECTED}"
+    echo "----------------------------------------"
+    echo "got:
+    ${ACTUAL}"
+    echo "----------------------------------------"
+    echo "ran:"
+    echo "${COMMAND}"
+    echo "----------------------------------------"
+    echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}"
+    echo "GITHUB_REF: ${GITHUB_REF}"
+    echo "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+    echo "========================================"
+    exit 1
+  fi
+  return 0
 }
 
 # test what happens when the required env vars aren't set
