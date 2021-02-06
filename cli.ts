@@ -21,9 +21,10 @@
     )
     .parse(process.argv);
   const { suffix } = program.opts();
+
   console.log(stackname(suffix));
 })().catch((err) => {
-  console.error("error encountered:");
+  console.error("@cdk-turnkey/stackname: error encountered:");
   console.error(err);
   process.exit(1);
 });

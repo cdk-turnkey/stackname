@@ -23,11 +23,41 @@ test_cli() {
   return 0
 }
 
+test_cli_error() {
+  EXPECTED=$1
+  COMMAND="npx .."
+  ACTUAL=$(eval ${COMMAND} 2>&1 || true) # || true because COMMAND should fail
+  echo "cli error case failure: expected:"
+  echo "${EXPECTED}"
+  echo "got:
+  ${ACTUAL}"
+  echo "ran:"
+  echo "${COMMAND}"
+  echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}"
+  echo "GITHUB_REF: ${GITHUB_REF}"
+}
+
+# test what happens when the required env vars aren't set
+EXPECTED_ERROR_NO_REPO="@cdk-turnkey/stackname: error encountered:
+GITHUB_REPOSITORY is not set.
+It should be something like octocat/Hello-World.
+See https://docs.github.com/en/actions/reference/environment-variables"
+EXPECTED_ERROR_NO_REF="@cdk-turnkey/stackname: error encountered:
+GITHUB_REF is not set.
+It should be something like refs/heads/feature-branch-1.
+See https://docs.github.com/en/actions/reference/environment-variables"
+GITHUB_REPOSITORY= GITHUB_REF= test_cli_error "${EXPECTED_ERROR_NO_REPO}"
+GITHUB_REPOSITORY=some/repo GITHUB_REF= test_cli_error "${EXPECTED_ERROR_NO_REF}"
+GITHUB_REPOSITORY= GITHUB_REF=refs/heads/some-ref test_cli_error "${EXPECTED_ERROR_NO_REPO}"
+
+# test help output
 if ! npx .. --help | grep --quiet suffix
 then
   echo "cli smoke test failure: --help did not print the word 'suffix'"
   exit 1
 fi
+
+# test realistic use cases
 test_cli cdk-turnkey/stackname refs/heads/abCde Cdk-turnkeyStacknameAbcde
 test_cli MyOrg/MyStack refs/heads/main StackOne MyorgMystackMain-StackOne
 
@@ -43,6 +73,7 @@ test_stack() {
   npx cdk destroy --force
 }
 
+# actually deploy to AWS with one or more stacks named using stackname
 for stack_dir in $(ls -d */)
 do
   echo "HERE IN: $(pwd)"
