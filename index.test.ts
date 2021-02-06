@@ -26,14 +26,26 @@ describe("stackname", () => {
       expect(stackname()).toEqual(expected);
     }
   );
+  const unsetRepoErrorMessage =
+    "GITHUB_REPOSITORY is not set." +
+    "\n" +
+    "It should be something like octocat/Hello-World." +
+    "\n" +
+    "See https://docs.github.com/en/actions/reference/environment-variables";
+  const unsetRefErrorMessage =
+    "GITHUB_REF is not set." +
+    "\n" +
+    "It should be something like refs/heads/feature-branch-1." +
+    "\n" +
+    "See https://docs.github.com/en/actions/reference/environment-variables";
   const slashErrorMessage =
     "Can't figure out repo name. Does GITHUB_REPOSITORY have a '/'?" +
     " It should have a '/' separating the organization or user from the " +
     "repo name.";
   test.each`
     gitHubRepository | gitHubRef              | expectedError
-    ${""}            | ${"refs/heads/master"} | ${"GITHUB_REPOSITORY is too short, length < 1"}
-    ${"a/bcd"}       | ${""}                  | ${"GITHUB_REF is too short, length < 1"}
+    ${""}            | ${"refs/heads/master"} | ${unsetRepoErrorMessage}
+    ${"a/bcd"}       | ${""}                  | ${unsetRefErrorMessage}
     ${"abcd"}        | ${"refs/heads/abc"}    | ${slashErrorMessage}
   `(
     "$GITHUB_REPOSITORY: $gitHubRepository, $GITHUB_REF: $gitHubRef -> throw '$expectedError'",
