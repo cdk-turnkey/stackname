@@ -101,7 +101,7 @@ done
 # prove this test method works
 output1=$(GITHUB_REPOSITORY=vvv/www GITHUB_REF=rrr npx ..)
 output1_length=$(echo -n $output1 | wc -c | awk '{print $1}')
-echo -n $output1
+echo $output1
 if [[ $output1_length -ne 9 ]]
 then
   echo "Wrong length"
