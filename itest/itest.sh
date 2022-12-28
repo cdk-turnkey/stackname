@@ -94,23 +94,3 @@ do
   echo "HERE IN: $(pwd)"
   test_stack ${stack_dir}
 done
-
-# -h6 should output something like:
-# s-abcde-abc123
-# Check the length
-# prove this test method works
-GITHUB_REPOSITORY=vvv/www GITHUB_REF=rrr npx ..
-output1=$(GITHUB_REPOSITORY=vvv/www GITHUB_REF=rrr npx ..)
-output1_length=$(echo -n $output1 | wc -c | awk '{print $1}')
-echo $output1
-if [[ $output1_length -ne 9 ]]
-then
-  echo "Wrong length"
-  exit 2
-fi
-output_h6=$(GITHUB_REPOSITORY=vvv/www GITHUB_REF=rrr npx .. -h6)
-output_h6_length=$(echo -n $output_h6 | wc -c | awk '{print $1}')
-
-
-
-# Similarly, with a suffix
