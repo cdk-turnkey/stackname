@@ -75,4 +75,21 @@ describe("stackname", () => {
       expect(stackname(identifier)).toEqual(expected);
     }
   );
+
+  test.each`
+    hashLength | suffix            | gitHubRepository | gitHubRef           | expected
+    ${1}       | ${"myappstack"}   | ${"a/bcd"}       | ${"refs/heads/xyZ"} | ${"ABcdXyz-myappstack"}
+    ${2}       | ${"YourAppStack"} | ${"D/va"}        | ${"refs/heads/rna"} | ${"DVaRna-YourAppStack"}
+    ${6}       | ${"YourAppStack"} | ${"D/v.a"}       | ${"refs/heads/rna"} | ${"DVaRna-YourAppStack"}
+    ${6}       | ${"YourAppStack"} | ${"D/v.a."}      | ${"refs/heads/rna"} | ${"DVaRna-YourAppStack"}
+    ${11}      | ${"YourAppStack"} | ${"D/v$a+"}      | ${"refs/heads/rna"} | ${"DVaRna-YourAppStack"}
+  `(
+    "hashLength: $hashLength, suffix: $suffix, " +
+    "$GITHUB_REPOSITORY: $gitHubRepository, $GITHUB_REF: $gitHubRef -> $expected",
+    ({ hashLength, suffix, gitHubRepository, gitHubRef, expected }) => {
+      process.env.GITHUB_REPOSITORY = gitHubRepository;
+      process.env.GITHUB_REF = gitHubRef;
+      expect(stackname(suffix)).toEqual(expected);
+    }
+  );
 });
