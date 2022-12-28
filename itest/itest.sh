@@ -99,6 +99,7 @@ done
 # s-abcde-abc123
 # Check the length
 # prove this test method works
+GITHUB_REPOSITORY=vvv/www GITHUB_REF=rrr npx ..
 output1=$(GITHUB_REPOSITORY=vvv/www GITHUB_REF=rrr npx ..)
 output1_length=$(echo -n $output1 | wc -c | awk '{print $1}')
 echo $output1
