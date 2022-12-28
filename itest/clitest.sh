@@ -20,6 +20,15 @@ then
 fi
 output_h6=$(GITHUB_REPOSITORY=vvv/www GITHUB_REF=rrr npx .. -h6)
 output_h6_length=$(echo -n $output_h6 | wc -c | awk '{print $1}')
+# Should be like:
+# svwrrr-abc123, length 13
+if [[ $output_h6_length -ne 13 ]]
+then
+  echo "Wrong length for output_h6"
+  echo "output_h6:"
+  echo $output_h6
+  exit 3
+fi
 
 
 
