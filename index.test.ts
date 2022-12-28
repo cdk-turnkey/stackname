@@ -1,6 +1,9 @@
 import { timeStamp } from "console";
-
+const crypto = require("crypto");
 const stackname = require("./index.ts");
+
+const sha256 = (content: string) =>
+  crypto.createHash("sha256").update(content).digest("hex").toLowerCase();
 describe("stackname", () => {
   const OLD_ENV = process.env;
   beforeEach(() => {
@@ -72,4 +75,7 @@ describe("stackname", () => {
       expect(stackname(identifier)).toEqual(expected);
     }
   );
+});
+describe("how hashes work", () => {
+  console.log(sha256("ff"));
 });
