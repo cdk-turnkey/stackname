@@ -19,8 +19,11 @@
       "A suffix to append to the stackname after a dash (-)",
       defaults.suffix
     )
+    .option(
+      "-h, --hash <LENGTH>",
+      "Hash GITHUB_REPOSITORY, GITHUB_REF, and suffix to produce a fixed-length stack name and avoid truncating"
     .parse(process.argv);
-  const { suffix } = program.opts();
+  const { suffix, hash } = program.opts();
   console.log(stackname(suffix));
 })().catch((err) => {
   console.error("@cdk-turnkey/stackname: error encountered:");
