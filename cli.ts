@@ -22,6 +22,7 @@
     .option(
       "-h, --hash <LENGTH>",
       "Hash GITHUB_REPOSITORY, GITHUB_REF, and suffix to produce a fixed-length stack name and avoid truncating"
+    )
     .parse(process.argv);
   const { suffix, hash } = program.opts();
   console.log(stackname(suffix));
