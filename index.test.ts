@@ -85,7 +85,7 @@ describe("stackname", () => {
     ${11}      | ${"YourAppStack"} | ${"D/v$a+"}      | ${"refs/heads/rna"} | ${"DVaRna-YourAppStack"}
   `(
     "hashLength: $hashLength, suffix: $suffix, " +
-    "$GITHUB_REPOSITORY: $gitHubRepository, $GITHUB_REF: $gitHubRef -> $expected",
+      "$GITHUB_REPOSITORY: $gitHubRepository, $GITHUB_REF: $gitHubRef -> $expected",
     ({ hashLength, suffix, gitHubRepository, gitHubRef, expected }) => {
       process.env.GITHUB_REPOSITORY = gitHubRepository;
       process.env.GITHUB_REF = gitHubRef;
@@ -94,8 +94,12 @@ describe("stackname", () => {
   );
 });
 describe("how hashes work", () => {
-  console.log(sha256("ff"));
+  expect(sha256("ff")).toEqual(
+    "05a9bf223fedf80a9d0da5f73f5c191a665bf4a0a4a3e608f2f9e7d5ff23959c"
+  );
   // sha256 of an empty string is e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
   // https://crypto.stackexchange.com/questions/26133/sha-256-hash-of-null-input
-  console.log(sha256(""));
+  expect(sha256("")).toEqual(
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  );
 });
