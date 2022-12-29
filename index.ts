@@ -72,7 +72,8 @@ const stackname = (shortName?: string, options?: { hash: number }) => {
     [REPO_INDEX].substring(0, 1);
   const repoComponent = firstLetterOfOrg + firstLetterOfRepo;
   const LETTERS_OF_REF = 3;
-  const refComponent = gitHubRef.substring(0, LETTERS_OF_REF);
+  const branch = gitHubRef.replace(/^refs\/heads\//, "");
+  const refComponent = branch.substring(0, LETTERS_OF_REF);
   const hashComponent = sha256(sha256(gitHubRepository) + sha256(gitHubRef));
   let ret = "sabcde-1a353c-fghi";
   ret =
