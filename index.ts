@@ -7,7 +7,7 @@
  *   - enables deploying from multiple feature branches in the same account
  *   - enables deploying to multiple regions from the same account, same branch
  */
-const stackname = (shortName?: string) => {
+const stackname = (shortName?: string, options?: { hash: number }) => {
   if (!process.env.GITHUB_REPOSITORY) {
     throw (
       "GITHUB_REPOSITORY is not set." +
@@ -43,18 +43,33 @@ const stackname = (shortName?: string) => {
       "repo name."
     );
   }
-  return (
-    gitHubRepository
-      .toLowerCase()
-      .replace(
-        /^([^/])([^/]*)[/]([^/])/,
-        (_, p1, p2, p3) => p1.toUpperCase() + p2 + p3.toUpperCase()
-      )
-      .replace(/[^A-Za-z0-9-]/g, "") +
-    gitHubRef
-      .toLowerCase()
-      .replace(/^refs\/heads\/(.)/, (_, p1) => p1.toUpperCase()) +
-    (shortName && shortName.length > 0 ? `-${shortName}` : "")
-  );
+  if (!options || !options.hash) {
+    return (
+      gitHubRepository
+        .toLowerCase()
+        .replace(
+          /^([^/])([^/]*)[/]([^/])/,
+          (_, p1, p2, p3) => p1.toUpperCase() + p2 + p3.toUpperCase()
+        )
+        .replace(/[^A-Za-z0-9-]/g, "") +
+      gitHubRef
+        .toLowerCase()
+        .replace(/^refs\/heads\/(.)/, (_, p1) => p1.toUpperCase()) +
+      (shortName && shortName.length > 0 ? `-${shortName}` : "")
+    );
+  }
+  const crypto = require("crypto");
+  const sha256 = (content: string) =>
+  crypto.createHash("sha256").update(content).digest("hex").toLowerCase();
+  const PREFIX = "s";
+  const SEPARATOR  = "-"
+  const firstLetterOfOrg = gitHubRepository.substring(0,1)
+  const REPO_INDEX= 1
+  const firstLetterOfRepo = gitHubRepository.split('/')[REPO_INDEX].substring(0,1)
+  const repoComponent = firstLetterOfOrg + firstLetterOfRepo;
+  const LETTERS_OF_REF = 3;
+  const refComponent = gitHubRef.substring(0, LETTERS_OF_REF - 1); 
+  
+  return "sabcde-1a353c-fghi"; // fake
 };
 module.exports = stackname;
