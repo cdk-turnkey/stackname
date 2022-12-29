@@ -1,6 +1,9 @@
 import { timeStamp } from "console";
-
+const crypto = require("crypto");
 const stackname = require("./index.ts");
+
+const sha256 = (content: string) =>
+  crypto.createHash("sha256").update(content).digest("hex").toLowerCase();
 describe("stackname", () => {
   const OLD_ENV = process.env;
   beforeEach(() => {
@@ -71,5 +74,67 @@ describe("stackname", () => {
       process.env.GITHUB_REF = gitHubRef;
       expect(stackname(identifier)).toEqual(expected);
     }
+  );
+
+  describe("Hashing strategy", () => {
+    test("hash component is h(h(repository) + h(ref))", () => {
+      const gitHubRepository = "a/b";
+      const gitHubRef = "cde";
+      const suffix = "fghi";
+      const hashComponent = sha256(
+        sha256(
+          gitHubRepository
+        ) /* c14cddc033f64b9dea80ea675cf280a015e672516090a5626781153dc68fea11 */ +
+          sha256(
+            gitHubRef
+          ) /* 08a018a9549220d707e11c5c4fe94d8dd60825f010e71efaa91e5e784f364d7b */
+      ); /* 1a353cbec894a34c2af92fd3fec68f9704594026520af0f0ec0b781e92550fb1 */
+      const PREFIX = "s"; // for stackname, CloudFormation stack names have to
+      // start with letters
+      const repoComponent = "ab";
+      const refComponent = "cde"; // always take first 3, even if it's longer, or take all if shorter
+      const SEPARATOR = "-"; // allowed by CloudFormation
+      const hashLength = 6;
+      const expected =
+        `${PREFIX}` +
+        `${repoComponent}` +
+        `${refComponent}` +
+        `${SEPARATOR}` +
+        `${hashComponent.substring(0, hashLength)}` +
+        `${SEPARATOR}` +
+        `${suffix}`;
+      process.env.GITHUB_REPOSITORY = gitHubRepository;
+      process.env.GITHUB_REF = gitHubRef;
+      expect(stackname(suffix, { hash: hashLength })).toEqual(
+        "sabcde-1a353c-fghi"
+      );
+    });
+  });
+
+  test.each`
+    hashLength | suffix            | gitHubRepository | gitHubRef           | expected
+    ${1}       | ${"myappstack"}   | ${"a/bcd"}       | ${"refs/heads/xyZ"} | ${"sabxyZ-83f11a-myappstack"}
+    ${2}       | ${"YourAppStack"} | ${"D/va"}        | ${"refs/heads/rna"} | ${"sDvrna-feb8f9-YourAppStack"}
+    ${6}       | ${"YourAppStack"} | ${"D/v.a"}       | ${"refs/heads/rna"} | ${"sDvrna-3280ea-YourAppStack"}
+    ${6}       | ${"YourAppStack"} | ${"D/v.a."}      | ${"refs/heads/rna"} | ${"sDvrna-0d23be-YourAppStack"}
+    ${11}      | ${"YourAppStack"} | ${"D/v$a+"}      | ${"refs/heads/rna"} | ${"sDvrna-feb995-YourAppStack"}
+  `(
+    "hashLength: $hashLength, suffix: $suffix, " +
+      "$GITHUB_REPOSITORY: $gitHubRepository, $GITHUB_REF: $gitHubRef -> $expected",
+    ({ hashLength, suffix, gitHubRepository, gitHubRef, expected }) => {
+      process.env.GITHUB_REPOSITORY = gitHubRepository;
+      process.env.GITHUB_REF = gitHubRef;
+      expect(stackname(suffix, { hash: 6 })).toEqual(expected);
+    }
+  );
+});
+describe("how hashes work", () => {
+  expect(sha256("ff")).toEqual(
+    "05a9bf223fedf80a9d0da5f73f5c191a665bf4a0a4a3e608f2f9e7d5ff23959c"
+  );
+  // sha256 of an empty string is e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  // https://crypto.stackexchange.com/questions/26133/sha-256-hash-of-null-input
+  expect(sha256("")).toEqual(
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
   );
 });
