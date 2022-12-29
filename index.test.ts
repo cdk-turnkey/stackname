@@ -76,6 +76,41 @@ describe("stackname", () => {
     }
   );
 
+  describe("Hashing strategy", () => {
+    test.only("hash component is h(h(repository) + h(ref))", () => {
+      const gitHubRepository = "a/b";
+      const gitHubRef = "cde";
+      const suffix = "fghi";
+      const hashComponent = sha256(
+        sha256(
+          gitHubRepository
+        ) /* c14cddc033f64b9dea80ea675cf280a015e672516090a5626781153dc68fea11 */ +
+          sha256(
+            gitHubRef
+          ) /* 08a018a9549220d707e11c5c4fe94d8dd60825f010e71efaa91e5e784f364d7b */
+      ); /* 1a353cbec894a34c2af92fd3fec68f9704594026520af0f0ec0b781e92550fb1 */
+      const PREFIX = "s"; // for stackname, CloudFormation stack names have to
+      // start with letters
+      const repoComponent = "ab";
+      const refComponent = "cde"; // always take first 3, even if it's longer, or take all if shorter
+      const SEPARATOR = "-"; // allowed by CloudFormation
+      const hashLength = 6;
+      const expected =
+        `${PREFIX}` +
+        `${repoComponent}` +
+        `${refComponent}` +
+        `${SEPARATOR}` +
+        `${hashComponent.substring(0, hashLength - 1)}` +
+        `${SEPARATOR}` +
+        `${suffix}`;
+      process.env.GITHUB_REPOSITORY = gitHubRepository;
+      process.env.GITHUB_REF = gitHubRef;
+      expect(stackname(suffix, { hash: hashLength })).toEqual(
+        "sabcde-1a353c-fghi"
+      );
+    });
+  });
+
   test.each`
     hashLength | suffix            | gitHubRepository | gitHubRef           | expected
     ${1}       | ${"myappstack"}   | ${"a/bcd"}       | ${"refs/heads/xyZ"} | ${"ABcdXyz-myappstack"}
