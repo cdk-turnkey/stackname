@@ -30,6 +30,24 @@ then
   exit 3
 fi
 
+output2=$(GITHUB_REPOSITORY=douglasnaphas/madliberation GITHUB_REF=refs/heads/main npx .. --suffix app --hash 4)
+expected_output2=sdmmai-3816-app
+if [[ "${output2}" -ne "${expected_output2}" ]]
+then
+  echo "Wrong output, expected:"
+  echo $expected_output2
+  echo "Got:"
+  echo $output2
+  exit 4
+fi
 
-
-# Similarly, with a suffix
+output3=$(GITHUB_REPOSITORY=douglasnaphas/madliberation GITHUB_REF=441-react18 npx .. --hash 5)
+expected_output3=sdm441-dc591
+if [[ "${output3}" -ne "${expected_output3}" ]]
+then
+  echo "Wrong output, expected:"
+  echo $expected_output3
+  echo "Got:"
+  echo $output3
+  exit 5
+fi
