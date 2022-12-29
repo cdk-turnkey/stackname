@@ -43,6 +43,7 @@ const stackname = (shortName?: string, options?: { hash: number }) => {
       "repo name."
     );
   }
+  const suffix = shortName && shortName.length > 0 ? `-${shortName}` : "";
   if (!options || !options.hash) {
     return (
       gitHubRepository
@@ -55,21 +56,32 @@ const stackname = (shortName?: string, options?: { hash: number }) => {
       gitHubRef
         .toLowerCase()
         .replace(/^refs\/heads\/(.)/, (_, p1) => p1.toUpperCase()) +
-      (shortName && shortName.length > 0 ? `-${shortName}` : "")
+      suffix
     );
   }
+  const hashLength = options.hash;
   const crypto = require("crypto");
   const sha256 = (content: string) =>
-  crypto.createHash("sha256").update(content).digest("hex").toLowerCase();
+    crypto.createHash("sha256").update(content).digest("hex").toLowerCase();
   const PREFIX = "s";
-  const SEPARATOR  = "-"
-  const firstLetterOfOrg = gitHubRepository.substring(0,1)
-  const REPO_INDEX= 1
-  const firstLetterOfRepo = gitHubRepository.split('/')[REPO_INDEX].substring(0,1)
+  const SEPARATOR = "-";
+  const firstLetterOfOrg = gitHubRepository.substring(0, 1);
+  const REPO_INDEX = 1;
+  const firstLetterOfRepo = gitHubRepository
+    .split("/")
+    [REPO_INDEX].substring(0, 1);
   const repoComponent = firstLetterOfOrg + firstLetterOfRepo;
   const LETTERS_OF_REF = 3;
-  const refComponent = gitHubRef.substring(0, LETTERS_OF_REF - 1); 
-  
-  return "sabcde-1a353c-fghi"; // fake
+  const refComponent = gitHubRef.substring(0, LETTERS_OF_REF);
+  const hashComponent = sha256(sha256(gitHubRepository) + sha256(gitHubRef));
+  let ret = "sabcde-1a353c-fghi";
+  ret =
+    `${PREFIX}` +
+    `${repoComponent}` +
+    `${refComponent}` +
+    `${SEPARATOR}` +
+    `${hashComponent.substring(0, hashLength)}` +
+    `${suffix}`;
+  return ret;
 };
 module.exports = stackname;

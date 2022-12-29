@@ -100,7 +100,7 @@ describe("stackname", () => {
         `${repoComponent}` +
         `${refComponent}` +
         `${SEPARATOR}` +
-        `${hashComponent.substring(0, hashLength - 1)}` +
+        `${hashComponent.substring(0, hashLength)}` +
         `${SEPARATOR}` +
         `${suffix}`;
       process.env.GITHUB_REPOSITORY = gitHubRepository;
