@@ -93,3 +93,9 @@ describe("stackname", () => {
     }
   );
 });
+describe("how hashes work", () => {
+  console.log(sha256("ff"));
+  // sha256 of an empty string is e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  // https://crypto.stackexchange.com/questions/26133/sha-256-hash-of-null-input
+  console.log(sha256(""));
+});
