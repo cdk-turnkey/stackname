@@ -113,18 +113,18 @@ describe("stackname", () => {
 
   test.each`
     hashLength | suffix            | gitHubRepository | gitHubRef           | expected
-    ${1}       | ${"myappstack"}   | ${"a/bcd"}       | ${"refs/heads/xyZ"} | ${"sabxyZ-83f11a-myappstack"}
-    ${2}       | ${"YourAppStack"} | ${"D/va"}        | ${"refs/heads/rna"} | ${"sDvrna-feb8f9-YourAppStack"}
+    ${1}       | ${"myappstack"}   | ${"a/bcd"}       | ${"refs/heads/xyZ"} | ${"sabxyZ-8-myappstack"}
+    ${2}       | ${"YourAppStack"} | ${"D/va"}        | ${"refs/heads/rna"} | ${"sDvrna-fe-YourAppStack"}
     ${6}       | ${"YourAppStack"} | ${"D/v.a"}       | ${"refs/heads/rna"} | ${"sDvrna-3280ea-YourAppStack"}
     ${6}       | ${"YourAppStack"} | ${"D/v.a."}      | ${"refs/heads/rna"} | ${"sDvrna-0d23be-YourAppStack"}
-    ${11}      | ${"YourAppStack"} | ${"D/v$a+"}      | ${"refs/heads/rna"} | ${"sDvrna-feb995-YourAppStack"}
+    ${11}      | ${"YourAppStack"} | ${"D/v$a+"}      | ${"refs/heads/rna"} | ${"sDvrna-feb9950bff0-YourAppStack"}
   `(
     "hashLength: $hashLength, suffix: $suffix, " +
       "$GITHUB_REPOSITORY: $gitHubRepository, $GITHUB_REF: $gitHubRef -> $expected",
     ({ hashLength, suffix, gitHubRepository, gitHubRef, expected }) => {
       process.env.GITHUB_REPOSITORY = gitHubRepository;
       process.env.GITHUB_REF = gitHubRef;
-      expect(stackname(suffix, { hash: 6 })).toEqual(expected);
+      expect(stackname(suffix, { hash: hashLength })).toEqual(expected);
     }
   );
 });
