@@ -15,13 +15,13 @@
       "Print a name for an AWS CDK stack based on environtment variables GITHUB_REPOSITORY, GITHUB_REF, and an optional suffix. `GITHUB_REPOSITORY=my-Name/myRepo GITHUB_REF=refs/heads/myBranch npx @cdk-turnkey/stackname --suffix StackOne` prints My-nameMyrepoMybranch-StackOne."
     )
     .option(
+      "-h, --hash <LENGTH>",
+      "Hash GITHUB_REPOSITORY, GITHUB_REF, and suffix to produce a fixed-length stack name and avoid truncating"
+    )
+    .option(
       "-s, --suffix <SUFFIX>",
       "A suffix to append to the stackname after a dash (-)",
       defaults.suffix
-    )
-    .option(
-      "-h, --hash <LENGTH>",
-      "Hash GITHUB_REPOSITORY, GITHUB_REF, and suffix to produce a fixed-length stack name and avoid truncating"
     )
     .parse(process.argv);
   const { suffix, hash } = program.opts();
