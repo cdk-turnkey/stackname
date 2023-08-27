@@ -7,16 +7,7 @@
  *   - enables deploying from multiple feature branches in the same account
  *   - enables deploying to multiple regions from the same account, same branch
  */
-const stackname = (shortName?: string, options?: { hash: number }) => {
-  if (!process.env.GITHUB_REPOSITORY) {
-    throw (
-      "GITHUB_REPOSITORY is not set." +
-      "\n" +
-      "It should be something like octocat/Hello-World." +
-      "\n" +
-      "See https://docs.github.com/en/actions/reference/environment-variables"
-    );
-  }
+const stackname = (shortName?: string, options?: { hash: number, repo: string }) => {
   if (!process.env.GITHUB_REF) {
     throw (
       "GITHUB_REF is not set." +
@@ -26,16 +17,16 @@ const stackname = (shortName?: string, options?: { hash: number }) => {
       "See https://docs.github.com/en/actions/reference/environment-variables"
     );
   }
-  const gitHubRepository: string = process.env.GITHUB_REPOSITORY as string;
+  const repo: string = options.repo || "";
   const gitHubRef: string = process.env.GITHUB_REF as string;
-  if (gitHubRepository.length < 1) {
+  if (repo.length < 1) {
     throw "GITHUB_REPOSITORY is too short, length < 1";
   }
   if (gitHubRef.length < 1) {
     throw "GITHUB_REF is too short, length < 1";
   }
   const slashLetterRegex = /\/(.)/;
-  const repoFirstLetterMatch = gitHubRepository.match(slashLetterRegex);
+  const repoFirstLetterMatch = repo.match(slashLetterRegex);
   if (!repoFirstLetterMatch || repoFirstLetterMatch.length < 2) {
     throw (
       "Can't figure out repo name. Does GITHUB_REPOSITORY have a '/'?" +
@@ -46,7 +37,7 @@ const stackname = (shortName?: string, options?: { hash: number }) => {
   const suffix = shortName && shortName.length > 0 ? `-${shortName}` : "";
   if (!options || !options.hash) {
     return (
-      gitHubRepository
+      repo
         .toLowerCase()
         .replace(
           /^([^/])([^/]*)[/]([^/])/,
@@ -65,16 +56,16 @@ const stackname = (shortName?: string, options?: { hash: number }) => {
     crypto.createHash("sha256").update(content).digest("hex").toLowerCase();
   const PREFIX = "s";
   const SEPARATOR = "-";
-  const firstLetterOfOrg = gitHubRepository.substring(0, 1);
+  const firstLetterOfOrg = repo.substring(0, 1);
   const REPO_INDEX = 1;
-  const firstLetterOfRepo = gitHubRepository
+  const firstLetterOfRepo = repo
     .split("/")
     [REPO_INDEX].substring(0, 1);
   const repoComponent = firstLetterOfOrg + firstLetterOfRepo;
   const LETTERS_OF_REF = 3;
   const branch = gitHubRef.replace(/^refs\/heads\//, "");
   const refComponent = branch.substring(0, LETTERS_OF_REF);
-  const hashComponent = sha256(sha256(gitHubRepository) + sha256(gitHubRef));
+  const hashComponent = sha256(sha256(repo) + sha256(gitHubRef));
   let ret = "sabcde-1a353c-fghi";
   ret =
     `${PREFIX}` +

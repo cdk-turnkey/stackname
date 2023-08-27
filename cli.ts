@@ -18,14 +18,18 @@
       "-h, --hash <LENGTH>",
       "Hash GITHUB_REPOSITORY, GITHUB_REF, and suffix to produce a fixed-length stack name and avoid truncating"
     )
+    .requiredOption(
+      "-r, --repo <REPO>",
+      "The org and repository name. Should have a '/' separating the org from the repo. Example: octocat/hello-world. Values used in GitHub Actions for" + " GITHUB_REPOSITORY are valid."
+    )
     .option(
       "-s, --suffix <SUFFIX>",
       "A suffix to append to the stackname after a dash (-)",
       defaults.suffix
     )
     .parse(process.argv);
-  const { suffix, hash } = program.opts();
-  console.log(stackname(suffix, { hash }));
+  const { hash, repo, suffix } = program.opts();
+  console.log(stackname(suffix, { hash, repo }));
 })().catch((err) => {
   console.error("@cdk-turnkey/stackname: error encountered:");
   console.error(err);
