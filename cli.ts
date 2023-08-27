@@ -29,7 +29,7 @@
     )
     .parse(process.argv);
   const { hash, repo, suffix } = program.opts();
-  console.log(stackname(suffix, { hash, repo }));
+  console.log(stackname({ hash, repo, suffix }));
 })().catch((err) => {
   console.error("@cdk-turnkey/stackname: error encountered:");
   console.error(err);

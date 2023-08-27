@@ -7,7 +7,7 @@
  *   - enables deploying from multiple feature branches in the same account
  *   - enables deploying to multiple regions from the same account, same branch
  */
-const stackname = (shortName?: string, options?: { hash: number, repo: string }) => {
+const stackname = (options: { hash?: number, repo: string, suffix?: string }) => {
   if (!process.env.GITHUB_REF) {
     throw (
       "GITHUB_REF is not set." +
@@ -34,7 +34,7 @@ const stackname = (shortName?: string, options?: { hash: number, repo: string })
       "repo name."
     );
   }
-  const suffix = shortName && shortName.length > 0 ? `-${shortName}` : "";
+  const suffix = options.suffix && options.suffix.length > 0 ? `-${options.suffix}` : "";
   if (!options || !options.hash) {
     return (
       repo

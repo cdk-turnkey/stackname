@@ -14,7 +14,7 @@ describe("stackname", () => {
     process.env = OLD_ENV;
   });
   test.each`
-    gitHubRepository                 | gitHubRef                    | expected
+    repo                             | gitHubRef                    | expected
     ${"douglasnaphas/madliberation"} | ${"refs/heads/master"}       | ${"DouglasnaphasMadliberationMaster"}
     ${"douglasNaphas/madLiberation"} | ${"refs/heads/master"}       | ${"DouglasnaphasMadliberationMaster"}
     ${"douglasNaphas/madLiberation"} | ${"refs/heads/Master"}       | ${"DouglasnaphasMadliberationMaster"}
@@ -22,19 +22,12 @@ describe("stackname", () => {
     ${"a/bcd"}                       | ${"refs/heads/xyZ"}          | ${"ABcdXyz"}
     ${"D/va"}                        | ${"refs/heads/rna"}          | ${"DVaRna"}
   `(
-    "$GITHUB_REPOSITORY: $gitHubRepository, $GITHUB_REF: $gitHubRef -> $expected",
-    ({ gitHubRepository, gitHubRef, expected }) => {
-      process.env.GITHUB_REPOSITORY = gitHubRepository;
+    "repo: $repo, $GITHUB_REF: $gitHubRef -> $expected",
+    ({ repo, gitHubRef, expected }) => {
       process.env.GITHUB_REF = gitHubRef;
-      expect(stackname()).toEqual(expected);
+      expect(stackname({repo})).toEqual(expected);
     }
   );
-  const unsetRepoErrorMessage =
-    "GITHUB_REPOSITORY is not set." +
-    "\n" +
-    "It should be something like octocat/Hello-World." +
-    "\n" +
-    "See https://docs.github.com/en/actions/reference/environment-variables";
   const unsetRefErrorMessage =
     "GITHUB_REF is not set." +
     "\n" +
@@ -46,44 +39,41 @@ describe("stackname", () => {
     " It should have a '/' separating the organization or user from the " +
     "repo name.";
   test.each`
-    gitHubRepository | gitHubRef              | expectedError
-    ${""}            | ${"refs/heads/master"} | ${unsetRepoErrorMessage}
+    repo             | gitHubRef              | expectedError
     ${"a/bcd"}       | ${""}                  | ${unsetRefErrorMessage}
     ${"abcd"}        | ${"refs/heads/abc"}    | ${slashErrorMessage}
   `(
-    "$GITHUB_REPOSITORY: $gitHubRepository, $GITHUB_REF: $gitHubRef -> throw '$expectedError'",
-    ({ gitHubRepository, gitHubRef, expectedError }) => {
-      process.env.GITHUB_REPOSITORY = gitHubRepository;
+    "repo: $repo, GITHUB_REF: $gitHubRef -> throw '$expectedError'",
+    ({ repo, gitHubRef, expectedError }) => {
       process.env.GITHUB_REF = gitHubRef;
       expect(() => {
-        stackname();
+        stackname({repo});
       }).toThrow(expectedError);
     }
   );
   test.each`
-    identifier        | gitHubRepository | gitHubRef           | expected
+    identifier        | repo             | gitHubRef           | expected
     ${"myappstack"}   | ${"a/bcd"}       | ${"refs/heads/xyZ"} | ${"ABcdXyz-myappstack"}
     ${"YourAppStack"} | ${"D/va"}        | ${"refs/heads/rna"} | ${"DVaRna-YourAppStack"}
     ${"YourAppStack"} | ${"D/v.a"}       | ${"refs/heads/rna"} | ${"DVaRna-YourAppStack"}
     ${"YourAppStack"} | ${"D/v.a."}      | ${"refs/heads/rna"} | ${"DVaRna-YourAppStack"}
     ${"YourAppStack"} | ${"D/v$a+"}      | ${"refs/heads/rna"} | ${"DVaRna-YourAppStack"}
   `(
-    "$GITHUB_REPOSITORY: $gitHubRepository, $GITHUB_REF: $gitHubRef -> $expected",
-    ({ identifier, gitHubRepository, gitHubRef, expected }) => {
-      process.env.GITHUB_REPOSITORY = gitHubRepository;
+    "repo: $repo, $GITHUB_REF: $gitHubRef -> $expected",
+    ({ identifier, repo, gitHubRef, expected }) => {
       process.env.GITHUB_REF = gitHubRef;
-      expect(stackname(identifier)).toEqual(expected);
+      expect(stackname({suffix: identifier, repo})).toEqual(expected);
     }
   );
 
   describe("Hashing strategy", () => {
     test("hash component is h(h(repository) + h(ref))", () => {
-      const gitHubRepository = "a/b";
+      const repo = "a/b";
       const gitHubRef = "cde";
       const suffix = "fghi";
       const hashComponent = sha256(
         sha256(
-          gitHubRepository
+          repo
         ) /* c14cddc033f64b9dea80ea675cf280a015e672516090a5626781153dc68fea11 */ +
           sha256(
             gitHubRef
@@ -103,16 +93,15 @@ describe("stackname", () => {
         `${hashComponent.substring(0, hashLength)}` +
         `${SEPARATOR}` +
         `${suffix}`;
-      process.env.GITHUB_REPOSITORY = gitHubRepository;
       process.env.GITHUB_REF = gitHubRef;
-      expect(stackname(suffix, { hash: hashLength })).toEqual(
+      expect(stackname({ hash: hashLength, repo, suffix })).toEqual(
         "sabcde-1a353c-fghi"
       );
     });
   });
 
   test.each`
-    hashLength | suffix            | gitHubRepository | gitHubRef           | expected
+    hashLength | suffix            | repo             | gitHubRef           | expected
     ${1}       | ${"myappstack"}   | ${"a/bcd"}       | ${"refs/heads/xyZ"} | ${"sabxyZ-8-myappstack"}
     ${2}       | ${"YourAppStack"} | ${"D/va"}        | ${"refs/heads/rna"} | ${"sDvrna-fe-YourAppStack"}
     ${6}       | ${"YourAppStack"} | ${"D/v.a"}       | ${"refs/heads/rna"} | ${"sDvrna-3280ea-YourAppStack"}
@@ -120,11 +109,10 @@ describe("stackname", () => {
     ${11}      | ${"YourAppStack"} | ${"D/v$a+"}      | ${"refs/heads/rna"} | ${"sDvrna-feb9950bff0-YourAppStack"}
   `(
     "hashLength: $hashLength, suffix: $suffix, " +
-      "$GITHUB_REPOSITORY: $gitHubRepository, $GITHUB_REF: $gitHubRef -> $expected",
-    ({ hashLength, suffix, gitHubRepository, gitHubRef, expected }) => {
-      process.env.GITHUB_REPOSITORY = gitHubRepository;
+      "repo: $repo, $GITHUB_REF: $gitHubRef -> $expected",
+    ({ hashLength, suffix, repo, gitHubRef, expected }) => {
       process.env.GITHUB_REF = gitHubRef;
-      expect(stackname(suffix, { hash: hashLength })).toEqual(expected);
+      expect(stackname({ hash: hashLength, repo, suffix })).toEqual(expected);
     }
   );
 });
