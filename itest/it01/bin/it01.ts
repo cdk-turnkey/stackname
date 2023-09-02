@@ -5,4 +5,7 @@ import { It01StackA } from "../lib/it01-stack-a";
 const stackname = require("../../../index");
 
 const app = new cdk.App();
-new It01StackA(app, stackname("It01StackA"));
+new It01StackA(
+  app,
+  stackname({ repo: process.env.GITHUB_REPOSITORY, suffix: "It01StackA" })
+);

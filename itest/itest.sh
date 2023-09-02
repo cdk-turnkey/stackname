@@ -2,7 +2,7 @@
 
 # test cli
 test_cli() {
-  GITHUB_REPOSITORY=$1
+  REPO=$1
   GITHUB_REF=$2
   if [[ $# -lt 4 ]]
   then
@@ -12,7 +12,7 @@ test_cli() {
     SUFFIX_ARG="--suffix $3"
     EXPECTED=$4
   fi
-  COMMAND="GITHUB_REPOSITORY=${GITHUB_REPOSITORY} GITHUB_REF=${GITHUB_REF} npx .. ${SUFFIX_ARG}"
+  COMMAND="GITHUB_REF=${GITHUB_REF} npx .. ${SUFFIX_ARG} --repo ${REPO}"
   ACTUAL=$(eval ${COMMAND})
   if [[ "${ACTUAL}" != "${EXPECTED}" ]]
   then
@@ -24,8 +24,8 @@ test_cli() {
 }
 
 test_cli_error() {
-  EXPECTED=$1
-  COMMAND="npx .."
+  EXPECTED=$2
+  COMMAND=$1
   ACTUAL=$(eval ${COMMAND} 2>&1 || true) # || true because COMMAND should fail
   if [[ "${ACTUAL}" != "${EXPECTED}" ]]
   then
@@ -43,7 +43,6 @@ test_cli_error() {
     echo "----------------------------------------"
     echo "${COMMAND}"
     echo "----------------------------------------"
-    echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}"
     echo "GITHUB_REF: ${GITHUB_REF}"
     echo "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
     echo "========================================"
@@ -53,17 +52,14 @@ test_cli_error() {
 }
 
 # test what happens when the required env vars aren't set
-EXPECTED_ERROR_NO_REPO="@cdk-turnkey/stackname: error encountered:
-GITHUB_REPOSITORY is not set.
-It should be something like octocat/Hello-World.
-See https://docs.github.com/en/actions/reference/environment-variables"
+EXPECTED_ERROR_NO_REPO="error: required option '-r, --repo <REPO>' not specified"
 EXPECTED_ERROR_NO_REF="@cdk-turnkey/stackname: error encountered:
 GITHUB_REF is not set.
 It should be something like refs/heads/feature-branch-1.
 See https://docs.github.com/en/actions/reference/environment-variables"
-GITHUB_REPOSITORY= GITHUB_REF= test_cli_error "${EXPECTED_ERROR_NO_REPO}"
-GITHUB_REPOSITORY=some/repo GITHUB_REF= test_cli_error "${EXPECTED_ERROR_NO_REF}"
-GITHUB_REPOSITORY= GITHUB_REF=refs/heads/some-ref test_cli_error "${EXPECTED_ERROR_NO_REPO}"
+GITHUB_REF= test_cli_error "npx .." "${EXPECTED_ERROR_NO_REPO}"
+GITHUB_REF= test_cli_error "npx .. --repo some/repo" "${EXPECTED_ERROR_NO_REF}"
+GITHUB_REF=refs/heads/some-ref test_cli_error "npx .." "${EXPECTED_ERROR_NO_REPO}"
 
 # test help output
 if ! npx .. --help | grep --quiet suffix
@@ -82,7 +78,7 @@ test_stack() {
   cd $stack_dir
   echo "NOW IN: $(pwd)"
   ls ..
-  npx ../..
+  npx ../.. --repo ${GITHUB_REPOSITORY}
   npx cdk bootstrap
   npx cdk deploy --require-approval never
   npx cdk destroy --force
