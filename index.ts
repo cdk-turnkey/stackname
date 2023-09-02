@@ -20,7 +20,7 @@ const stackname = (options: { hash?: number, repo: string, suffix?: string }) =>
   const repo: string = options.repo || "";
   const gitHubRef: string = process.env.GITHUB_REF as string;
   if (repo.length < 1) {
-    throw "GITHUB_REPOSITORY is too short, length < 1";
+    throw "repo name is too short, length < 1";
   }
   if (gitHubRef.length < 1) {
     throw "GITHUB_REF is too short, length < 1";
