@@ -73,17 +73,13 @@ test_cli MyOrg/MyStack refs/heads/main StackOne MyorgMystackMain-StackOne
 test_stack() {
   local stack_dir=$1
   cd $stack_dir
-  echo "NOW IN: $(pwd)"
-  ls ..
-  npx ../.. --repo ${GITHUB_REPOSITORY} --ref ${GITHUB_REF}
-  npx cdk bootstrap
-  npx cdk deploy --require-approval never
-  npx cdk destroy --force
+  npx cdk@latest bootstrap
+  npx cdk@latest deploy --require-approval never
+  npx cdk@latest destroy --force
 }
 
 # actually deploy to AWS with one or more stacks named using stackname
 for stack_dir in $(ls -d */)
 do
-  echo "HERE IN: $(pwd)"
   test_stack ${stack_dir}
 done
