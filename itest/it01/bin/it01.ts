@@ -7,5 +7,9 @@ const stackname = require("../../../index");
 const app = new cdk.App();
 new It01StackA(
   app,
-  stackname({ repo: process.env.GITHUB_REPOSITORY, suffix: "It01StackA" })
+  stackname({
+    repo: process.env.GITHUB_REPOSITORY,
+    ref: process.env.GITHUB_REF,
+    suffix: "It01StackA",
+  })
 );

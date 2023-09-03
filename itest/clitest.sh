@@ -1,23 +1,16 @@
 #!/bin/bash
-npx .. --repo ddd/eee --ref=ccc
-o1=$(GITHUB_REF=fff npx .. --repo ddd/eee)
-echo $o1
-o1_length=$(echo -n $o1 | wc -c | awk '{print $1}')
-echo $o1_length
 
 # -h6 should output something like:
 # s-abcde-abc123
 # Check the length
-# prove this test method works
-GITHUB_REF=rrr npx .. --repo vvv/www
 output1=$(npx .. --repo vvv/www --ref rrr)
 output1_length=$(echo -n $output1 | wc -c | awk '{print $1}')
-echo $output1
 if [[ $output1_length -ne 9 ]]
 then
   echo "Wrong length"
   exit 2
 fi
+
 output_h6=$(npx .. -h6 --repo vvv/www --ref rrr)
 output_h6_length=$(echo -n $output_h6 | wc -c | awk '{print $1}')
 # Should be like:

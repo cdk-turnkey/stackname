@@ -3,7 +3,7 @@
 # test cli
 test_cli() {
   REPO=$1
-  GITHUB_REF=$2
+  REF=$2
   if [[ $# -lt 4 ]]
   then
     SUFFIX_ARG=
@@ -12,7 +12,7 @@ test_cli() {
     SUFFIX_ARG="--suffix $3"
     EXPECTED=$4
   fi
-  COMMAND="GITHUB_REF=${GITHUB_REF} npx .. ${SUFFIX_ARG} --repo ${REPO}"
+  COMMAND="GITHUB_REF=${GITHUB_REF} npx .. ${SUFFIX_ARG} --repo ${REPO} --ref ${REF}"
   ACTUAL=$(eval ${COMMAND})
   if [[ "${ACTUAL}" != "${EXPECTED}" ]]
   then
@@ -53,13 +53,10 @@ test_cli_error() {
 
 # test what happens when the required env vars aren't set
 EXPECTED_ERROR_NO_REPO="error: required option '-r, --repo <REPO>' not specified"
-EXPECTED_ERROR_NO_REF="@cdk-turnkey/stackname: error encountered:
-GITHUB_REF is not set.
-It should be something like refs/heads/feature-branch-1.
-See https://docs.github.com/en/actions/reference/environment-variables"
-GITHUB_REF= test_cli_error "npx .." "${EXPECTED_ERROR_NO_REPO}"
-GITHUB_REF= test_cli_error "npx .. --repo some/repo" "${EXPECTED_ERROR_NO_REF}"
-GITHUB_REF=refs/heads/some-ref test_cli_error "npx .." "${EXPECTED_ERROR_NO_REPO}"
+EXPECTED_ERROR_NO_REF="error: required option '-b, --ref <REF>' not specified"
+test_cli_error "npx .." "${EXPECTED_ERROR_NO_REPO}"
+test_cli_error "npx .. --repo some/repo" "${EXPECTED_ERROR_NO_REF}"
+test_cli_error "npx .. --ref refs/heads/some-ref" "${EXPECTED_ERROR_NO_REPO}"
 
 # test help output
 if ! npx .. --help | grep --quiet suffix
@@ -78,7 +75,7 @@ test_stack() {
   cd $stack_dir
   echo "NOW IN: $(pwd)"
   ls ..
-  npx ../.. --repo ${GITHUB_REPOSITORY}
+  npx ../.. --repo ${GITHUB_REPOSITORY} --ref ${GITHUB_REF}
   npx cdk bootstrap
   npx cdk deploy --require-approval never
   npx cdk destroy --force
