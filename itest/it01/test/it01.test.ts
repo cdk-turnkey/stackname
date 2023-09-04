@@ -3,7 +3,7 @@ import {
   matchTemplate,
   MatchStyle,
 } from "@aws-cdk/assert";
-import * as cdk from "@aws-cdk/core";
+import * as cdk from "aws-cdk-lib";
 import * as It01A from "../lib/it01-stack-a";
 
 describe("Stack A", () => {
