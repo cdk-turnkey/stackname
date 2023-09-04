@@ -24,12 +24,12 @@ jobs:
 
       - name: Install
         run: |
-          npm install
+          npm ci
 
       - name: Install itests
         working-directory: ./itest
         run: |
-          for stack_dir in $(ls -d */) ; do cd ${stack_dir} && npm install && cd .. ; done
+          for stack_dir in $(ls -d */) ; do cd ${stack_dir} && npm ci && cd .. ; done
 
       - name: Build
         run: |
