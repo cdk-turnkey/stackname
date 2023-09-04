@@ -1,8 +1,3 @@
-import {
-  expect as expectCDK,
-  matchTemplate,
-  MatchStyle,
-} from "@aws-cdk/assert";
 import * as cdk from "aws-cdk-lib";
 import * as It01A from "../lib/it01-stack-a";
 
