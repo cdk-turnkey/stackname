@@ -57,7 +57,7 @@ jobs:
           then
             echo "expected account ${EXPECTED_ACCOUNT}, got ${ACTUAL_ACCOUNT}"
           fi
-          [[ "${ACTUAL_ACCOUNT}" == "${EXPECTED_ACCOUNT}" ]]
+          [[ "${ACTUAL_ACCOUNT}" == "${EXPECTED_ACCOUNT}" ]] # stop if false
           echo "using AWS account ${ACTUAL_ACCOUNT}"
 
       - name: Run integration tests
