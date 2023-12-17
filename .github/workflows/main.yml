@@ -44,6 +44,21 @@ jobs:
         run: |
           bash clitest.sh
 
+      - name: Account check
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.TEST_AWS_DEFAULT_REGION }}
+          EXPECTED_ACCOUNT: ${{ vars.AWS_ACCOUNT_ID }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+        run: |
+          ACTUAL_ACCOUNT=$(aws sts get-caller-identity | jq -r '.Account')
+          if [[ "${ACTUAL_ACCOUNT}" != "${EXECTED_ACCOUNT}" ]]
+            echo "expected account ${EXPECTED_ACCOUNT}, got ${ACTUAL_ACCOUNT}"
+          fi
+          [[ "${ACTUAL_ACCOUNT}" == "${EXPECTED_ACCOUNT}" ]]
+          echo "using AWS account ${ACTUAL_ACCOUNT}"
+
       - name: Run integration tests
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
