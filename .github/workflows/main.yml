@@ -53,7 +53,7 @@ jobs:
           AWS_REGION: ${{ vars.AWS_REGION }}
         run: |
           ACTUAL_ACCOUNT=$(aws sts get-caller-identity | jq -r '.Account')
-          if [[ "${ACTUAL_ACCOUNT}" != "${EXECTED_ACCOUNT}" ]]
+          if [[ "${ACTUAL_ACCOUNT}" != "${EXPECTED_ACCOUNT}" ]]
           then
             echo "expected account ${EXPECTED_ACCOUNT}, got ${ACTUAL_ACCOUNT}"
           fi
