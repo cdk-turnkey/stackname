@@ -54,6 +54,7 @@ jobs:
         run: |
           ACTUAL_ACCOUNT=$(aws sts get-caller-identity | jq -r '.Account')
           if [[ "${ACTUAL_ACCOUNT}" != "${EXECTED_ACCOUNT}" ]]
+          then
             echo "expected account ${EXPECTED_ACCOUNT}, got ${ACTUAL_ACCOUNT}"
           fi
           [[ "${ACTUAL_ACCOUNT}" == "${EXPECTED_ACCOUNT}" ]]
