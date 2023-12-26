@@ -61,7 +61,7 @@ jobs:
           echo "using AWS account ${ACTUAL_ACCOUNT}"
 
       - name: Run integration tests
-        env:
+        env: # Do npm script(s) to validate that we're auth'd via OIDC, print instructions if not, set up OIDC repo(s) with libs and bins as needed, or not
           AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.TEST_AWS_DEFAULT_REGION }}
